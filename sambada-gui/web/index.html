@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SAMBADA Studio</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1><b>SAMBADA</b> <span>Studio</span></h1>
+      <p class="sub">Détection de signatures de sélection &amp; analyse spatiale</p>
+    </div>
+    <div class="meta">
+      <div class="ver" id="verLine">…</div>
+      <div class="status" id="statusLine"></div>
+      <button class="quit" id="quitBtn" hidden>Quitter</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="sambada">Analyse</button>
+    <button class="tab" data-tab="recode">Préparation (Plink)</button>
+    <button class="tab" data-tab="docs">Documentation</button>
+    <button class="tab" data-tab="about">À propos</button>
+  </nav>
+
+  <main>
+    <!-- ============ ANALYSE ============ -->
+    <section class="panel active" id="tab-sambada">
+      <div class="cols">
+        <form id="sambadaForm" autocomplete="off"></form>
+        <aside class="side">
+          <div class="side-head">
+            <span class="side-title">Paramètres générés</span>
+            <button type="button" class="mini" id="copyParam">copier</button>
+          </div>
+          <div class="code" id="paramPreview"></div>
+          <div class="missing" id="validationMsg"></div>
+          <button type="button" class="run" id="runSambada" disabled>▶ Lancer l'analyse</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ PRÉPARATION PLINK ============ -->
+    <section class="panel" id="tab-recode">
+      <div class="cols">
+        <form id="recodeForm" autocomplete="off"></form>
+        <aside class="side">
+          <div class="side-head"><span class="side-title">Commande générée</span></div>
+          <div class="code" id="recodePreview"></div>
+          <div class="missing" id="recodeValidation"></div>
+          <button type="button" class="run" id="runRecode" disabled>▶ Lancer le recodage</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ DOCUMENTATION ============ -->
+    <section class="panel" id="tab-docs">
+      <div class="docs-wrap">
+        <div class="docs-toc" id="docsToc">
+          <button class="doc-link active" data-doc="guide-demarrage.md">Getting started</button>
+          <button class="doc-link" data-doc="parametres.md">Parameter reference</button>
+          <button class="doc-link" data-doc="formats.md">File formats</button>
+        </div>
+        <article class="docs-content" id="docsContent">…</article>
+      </div>
+    </section>
+
+    <!-- ============ À PROPOS ============ -->
+    <section class="panel" id="tab-about">
+      <div class="about">
+        <h2>À propos de SAMBADA Studio</h2>
+        <p><strong>SAMBADA</strong> est un logiciel de génomique du paysage développé par le
+           Laboratoire de systèmes d'information géographique (LaSIG) de l'EPFL
+           (Sylvie Stucki, Stéphane Joost). Il détecte les associations entre marqueurs génétiques
+           et variables environnementales (signatures de sélection) et analyse la dépendance spatiale.</p>
+        <p><strong>SAMBADA Studio</strong> est une interface graphique qui facilite l'usage du logiciel.
+           Elle <em>n'altère pas</em> le comportement de SAMBADA : elle prépare le fichier de paramètres
+           et appelle les programmes officiels.</p>
+        <div id="aboutEnv" class="about-env"></div>
+        <p class="muted">SAMBADA est distribué sous licence GPL v3 — voir <code>COPYING</code> et <code>AUTHORS</code>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Modale console d'exécution ===== -->
+  <div class="modal-bg" id="runModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="runTitle">Exécution…</h3>
+        <span class="run-status" id="runStatus">en cours…</span>
+      </div>
+      <pre class="console" id="console"></pre>
+      <div class="results" id="results"></div>
+      <div class="modal-foot">
+        <button type="button" class="ghost" id="closeRun">Fermer</button>
+        <button type="button" class="ghost" id="openOutputDir" hidden>📂 Ouvrir le dossier des résultats</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modale sélecteur de fichiers ===== -->
+  <div class="modal-bg" id="fileModal">
+    <div class="modal filebrowser">
+      <div class="modal-head"><h3 id="fbTitle">Choisir un fichier</h3></div>
+      <div class="fb-path"><input type="text" id="fbPath" spellcheck="false" /><button class="ghost small" id="fbGo">Aller</button></div>
+      <div class="fb-list" id="fbList"></div>
+      <div class="modal-foot">
+        <button type="button" class="ghost" id="fbCancel">Annuler</button>
+        <button type="button" class="primary" id="fbChooseDir" hidden>Choisir ce dossier</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

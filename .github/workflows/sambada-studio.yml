@@ -1,0 +1,119 @@
+name: SAMBADA Studio — exécutables téléchargeables
+
+# Construit les exécutables autonomes (macOS / Windows / Linux) et les publie.
+# - Déclenchement manuel : onglet Actions -> "Run workflow".
+# - Sur un tag "studio-vX.Y" : publie aussi une Release avec les 3 archives en téléchargement.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['studio-v*']
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------- macOS
+  macos:
+    name: macOS (.app)
+    runs-on: macos-13          # Intel -> compatible Intel ET Apple Silicon (via Rosetta)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Outils de compilation
+        run: brew install gcc cmake
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Compiler les binaires SAMBADA
+        run: bash sambada-gui/build/build-macos.sh
+      - name: Empaqueter l'application
+        run: |
+          python -m pip install --upgrade pip pyinstaller pywebview
+          cd sambada-gui
+          pyinstaller --noconfirm --clean --distpath dist --workpath build/pyi packaging/SambadaStudio.spec
+          cd dist && ditto -c -k --sequesterRsrc --keepParent "SAMBADA Studio.app" SAMBADA-Studio-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SAMBADA-Studio-macOS
+          path: sambada-gui/dist/SAMBADA-Studio-macOS.zip
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------- Linux
+  linux:
+    name: Linux (binaire)
+    runs-on: ubuntu-22.04      # glibc 2.35 -> large compatibilité
+    steps:
+      - uses: actions/checkout@v4
+      - name: Outils de compilation
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Compiler les binaires SAMBADA
+        run: bash sambada-gui/build/build-linux.sh
+      - name: Empaqueter l'application
+        run: |
+          python -m pip install --upgrade pip pyinstaller pywebview
+          cd sambada-gui
+          pyinstaller --noconfirm --clean --distpath dist --workpath build/pyi packaging/SambadaStudio.spec
+          cd dist && chmod +x SambadaStudio && tar czf SAMBADA-Studio-Linux.tar.gz SambadaStudio
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SAMBADA-Studio-Linux
+          path: sambada-gui/dist/SAMBADA-Studio-Linux.tar.gz
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------- Windows
+  windows:
+    name: Windows (.exe)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain MinGW (gcc + cmake + ninja)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+      - name: Compiler les binaires SAMBADA
+        shell: msys2 {0}
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          rm -rf build-gui && mkdir build-gui && cd build-gui
+          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_EXE_LINKER_FLAGS="-static -static-libstdc++ -static-libgcc"
+          cmake --build . -j4 --target sambada supervision recode-plink recode-plink-lfmm
+          mkdir -p ../sambada-gui/bin/windows
+          cp binaries/*.exe ../sambada-gui/bin/windows/
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Empaqueter l'application
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip pyinstaller pywebview
+          cd sambada-gui
+          pyinstaller --noconfirm --clean --distpath dist --workpath build/pyi packaging/SambadaStudio.spec
+          Compress-Archive -Force -Path dist/SambadaStudio.exe -DestinationPath dist/SAMBADA-Studio-Windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SAMBADA-Studio-Windows
+          path: sambada-gui/dist/SAMBADA-Studio-Windows.zip
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------- Release (sur tag)
+  release:
+    name: Publier la Release
+    needs: [macos, linux, windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/studio-v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts }
+      - name: Créer/mettre à jour la Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          body: |
+            Exécutables autonomes de **SAMBADA Studio** (aucune installation requise).
+            - **macOS** : `SAMBADA-Studio-macOS.zip` (décompresser, puis clic droit → Ouvrir)
+            - **Windows** : `SAMBADA-Studio-Windows.zip` (décompresser, lancer `SambadaStudio.exe`)
+            - **Linux** : `SAMBADA-Studio-Linux.tar.gz` (extraire, `chmod +x`, exécuter)

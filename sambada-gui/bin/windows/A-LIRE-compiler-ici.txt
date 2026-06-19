@@ -1,0 +1,3 @@
+Les binaires Windows ne sont pas inclus.
+Compilez-les sur une machine Windows avec : build/build-windows.bat
+(voir le README, section Compilation).
