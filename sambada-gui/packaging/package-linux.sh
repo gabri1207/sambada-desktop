@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
-# Produit l'exécutable Linux autonome : sambada-gui/dist/SAMBADA-Studio-Linux.tar.gz
-# (contient l'exécutable unique "SambadaStudio", aucune dépendance Python pour l'utilisateur final)
-# Prérequis : g++ (build-essential), cmake, python3 (>=3.9) + venv.
+# Produces the standalone Linux executable: sambada-gui/dist/SAMBADA-Studio-Linux.tar.gz
+# (contains the single "SambadaStudio" executable; no Python dependency for the end user)
+# Requirements: g++ (build-essential), cmake, python3 (>=3.9) + venv.
 set -e
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GUI="$(cd "$HERE/.." && pwd)"
 
-echo "==> 1/4  Compilation des binaires SAMBADA (si nécessaire)"
+echo "==> 1/4  Building the SAMBADA binaries (if needed)"
 if [ ! -f "$GUI/bin/linux/sambada" ]; then
   bash "$GUI/build/build-linux.sh"
 fi
 
-echo "==> 2/4  Environnement Python + PyInstaller"
+echo "==> 2/4  Python environment + PyInstaller"
 cd "$GUI"
 PY="$(command -v python3.12 || command -v python3.11 || command -v python3)"
-echo "    Python : $PY"
+echo "    Python: $PY"
 [ -d .venv ] || "$PY" -m venv .venv
 .venv/bin/python -m pip install --quiet --upgrade pip
-.venv/bin/python -m pip install --quiet pyinstaller pywebview  # pywebview = fenêtre native (repli navigateur si webkit2gtk absent)
+.venv/bin/python -m pip install --quiet pyinstaller pywebview  # pywebview = native window (browser fallback if webkit2gtk is absent)
 
-echo "==> 3/4  Empaquetage (PyInstaller)"
+echo "==> 3/4  Packaging (PyInstaller)"
 .venv/bin/pyinstaller --noconfirm --clean --distpath dist --workpath build/pyi packaging/SambadaStudio.spec
 
-echo "==> 4/4  Archive téléchargeable"
+echo "==> 4/4  Downloadable archive"
 cd dist
 chmod +x SambadaStudio
 rm -f SAMBADA-Studio-Linux.tar.gz

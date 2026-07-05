@@ -1,0 +1,3 @@
+The Windows binaries are not included.
+Build them on a Windows machine with: build\build-windows.bat
+(see the README, "building" section).

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Double-cliquez (ou exécutez : bash Lancer-SAMBADA-Linux.sh) pour lancer SAMBADA Studio.
+# Double-click (or run: bash Launch-SAMBADA-Linux.sh) to launch SAMBADA Studio.
 cd "$(dirname "$0")" || exit 1
 
 PY=""
@@ -8,10 +8,10 @@ for c in python3 python; do
 done
 
 if [ -z "$PY" ]; then
-  echo "Python 3 est introuvable. Installez-le, par ex. :"
+  echo "Python 3 was not found. Install it, for example:"
   echo "  sudo apt install python3      (Debian/Ubuntu)"
   echo "  sudo dnf install python3      (Fedora)"
-  read -r -p "Appuyez sur Entrée pour fermer."
+  read -r -p "Press Enter to close."
   exit 1
 fi
 

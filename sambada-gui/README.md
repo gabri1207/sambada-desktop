@@ -1,30 +1,34 @@
-# SAMBADA Studio — interface graphique pour SAMBADA
+<p align="center">
+  <img src="web/assets/sambada-wordmark.png" alt="SAMBADA Studio" height="84">
+</p>
 
-Une application conviviale pour utiliser **SAMBADA** (génomique du paysage) **sans ligne de commande** :
-sélection des fichiers, formulaire de paramètres avec aide intégrée, exécution en un clic,
-documentation incluse. Conçue pour qu'un·e étudiant·e démarre en quelques minutes.
+# SAMBADA Studio — graphical interface for SAMBADA
 
-> **SAMBADA Studio ne modifie pas** le fonctionnement de SAMBADA. C'est une surcouche qui prépare le
-> fichier de paramètres et appelle les programmes officiels (`sambada`, `supervision`,
-> `recode-plink`, `recode-plink-lfmm`). Les résultats sont identiques à ceux de la ligne de commande.
+A friendly application to use **SAMBADA** (landscape genomics) **without the command line**:
+file selection, a parameter form with built-in help, one-click execution, and bundled
+documentation. Designed so a student can get started in minutes.
+
+> **SAMBADA Studio does not change** how SAMBADA works. It is a thin wrapper that prepares the
+> parameter file and calls the official programs (`sambada`, `supervision`, `recode-plink`,
+> `recode-plink-lfmm`). Results are identical to the command line.
 
 ---
 
-## Pour l'étudiant·e : télécharger et lancer (aucune installation)
+## For the student: download and run (no installation)
 
-Téléchargez l'exécutable correspondant à votre système (page **Releases** du dépôt), puis :
+Download the executable for your system (the repository's **Releases** page), then:
 
 ### 🍎 macOS — `SAMBADA-Studio-macOS.zip`
-1. Double-cliquez le `.zip` pour le décompresser → vous obtenez **`SAMBADA Studio.app`**.
-2. **Clic droit sur l'app → Ouvrir** (la 1re fois seulement), puis confirmez.
-   *(macOS bloque par défaut les apps non signées téléchargées ; le clic droit → Ouvrir contourne cela.)*
-3. L'application s'ouvre dans **sa propre fenêtre** (pas dans le navigateur). Pour quitter : fermez la fenêtre.
+1. Double-click the `.zip` to extract it → you get **`SAMBADA Studio.app`**.
+2. **Right-click the app → Open** (first time only), then confirm.
+   *(macOS blocks unsigned downloaded apps by default; right-click → Open bypasses this.)*
+3. The app opens in **its own window**. To quit, close the window.
 
 ### 🪟 Windows — `SAMBADA-Studio-Windows.zip`
-1. Décompressez le `.zip`, puis lancez **`SambadaStudio.exe`**.
-2. Si « Windows a protégé votre PC » apparaît : **Informations complémentaires → Exécuter quand même**
-   *(normal pour un exécutable non signé).*
-3. L'application s'ouvre dans **sa propre fenêtre** (via WebView2, inclus dans Windows 10/11).
+1. Extract the `.zip`, then run **`SambadaStudio.exe`**.
+2. If "Windows protected your PC" appears: **More info → Run anyway**
+   *(normal for an unsigned executable).*
+3. The app opens in its own window (via WebView2, included in Windows 10/11).
 
 ### 🐧 Linux — `SAMBADA-Studio-Linux.tar.gz`
 ```bash
@@ -32,75 +36,82 @@ tar xzf SAMBADA-Studio-Linux.tar.gz
 chmod +x SambadaStudio
 ./SambadaStudio
 ```
-*(Sur Linux, l'interface s'affiche dans une fenêtre native si `webkit2gtk` est présent, sinon elle s'ouvre dans le navigateur par défaut — l'usage est identique.)*
+*(On Linux the interface shows in a native window if `webkit2gtk` is present, otherwise it opens
+in your default browser — usage is identical.)*
 
-**Aucune installation de Python ou de SAMBADA n'est nécessaire** : tout est inclus dans l'exécutable.
+**No Python or SAMBADA installation is required**: everything is bundled in the executable.
 
 ---
 
-## Pour l'enseignant·e : produire les exécutables
+## For the instructor: building the executables
 
-Un exécutable est **spécifique à chaque système** et doit être **fabriqué sur ce système**.
-Deux méthodes :
+An executable is **specific to each system** and must be **built on that system**. Two options:
 
-### A. Automatique via GitHub Actions (recommandé)
-Le workflow [`.github/workflows/sambada-studio.yml`](../.github/workflows/sambada-studio.yml) compile et
-empaquette les **trois** exécutables (macOS, Windows, Linux) sur les serveurs de GitHub :
+### A. Automatic via GitHub Actions (recommended)
+The workflow [`.github/workflows/sambada-studio.yml`](../.github/workflows/sambada-studio.yml) builds and
+packages **all three** executables (macOS, Windows, Linux) on GitHub's servers:
 
-- **Manuel** : onglet *Actions* → *SAMBADA Studio — exécutables téléchargeables* → *Run workflow*.
-  Les 3 archives apparaissent comme *artifacts* du run.
-- **Release** : poussez un tag `studio-vX.Y` (ex. `git tag studio-v1.0 && git push --tags`) → une
-  **Release** est créée avec les 3 archives en téléchargement direct pour les étudiants.
+- **Manual**: *Actions* tab → *SAMBADA Studio — downloadable executables* → *Run workflow*.
+  The three archives appear as run *artifacts*.
+- **Release**: push a `studio-vX.Y` tag (e.g. `git tag studio-v1.0 && git push --tags`) → a
+  **Release** is created with the three archives ready to download.
 
-### B. Localement (un OS à la fois)
-Nécessite **GCC**, **CMake** et **Python 3.11/3.12** sur la machine cible.
-> ⚠️ Utilisez **GCC** (pas Clang) : la librairie Scythe embarquée utilise des éléments du C++ retirés
-> des versions récentes de Clang/libc++.
+### B. Locally (one OS at a time)
+Requires **GCC**, **CMake** and **Python 3.11/3.12** on the target machine.
+> ⚠️ Use **GCC** (not Clang): the bundled Scythe library uses C++ features removed from recent
+> Clang/libc++ versions.
 
-| Système | Commande | Produit |
+| System | Command | Produces |
 |---|---|---|
 | macOS | `bash sambada-gui/packaging/package-macos.sh` | `dist/SAMBADA-Studio-macOS.zip` |
 | Linux | `bash sambada-gui/packaging/package-linux.sh` | `dist/SAMBADA-Studio-Linux.tar.gz` |
 | Windows | `sambada-gui\packaging\package-windows.bat` | `dist\SAMBADA-Studio-Windows.zip` |
 
-(Outils : macOS → `brew install gcc cmake` ; Linux → `sudo apt install build-essential cmake` ;
+(Tools: macOS → `brew install gcc cmake`; Linux → `sudo apt install build-essential cmake`;
 Windows → MSYS2 + `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake`.)
 
----
-
-## Alternative légère : lancer sans empaqueter
-
-Si Python 3 est installé, on peut lancer l'app directement, sans construire d'exécutable, via les
-lanceurs double-clic : `Lancer-SAMBADA-macOS.command`, `Lancer-SAMBADA-Windows.bat`,
-`Lancer-SAMBADA-Linux.sh`. (Les binaires SAMBADA doivent alors être présents dans `bin/<système>/` ;
-voir les scripts `build/`.)
+### Code signing (important for distribution)
+The produced executables are **not code-signed or notarized**. When downloaded, macOS
+(Gatekeeper) and Windows (SmartScreen) will warn that the app is from an unidentified
+developer — students must use the *right-click → Open* / *More info → Run anyway* steps
+above. To remove those warnings you would need an Apple Developer ID (sign + `notarytool`)
+and a Windows Authenticode certificate; this is optional and not required for the app to run.
 
 ---
 
-## Contenu du dossier
+## Lightweight alternative: run without packaging
+
+If Python 3 is installed, you can run the app directly, without building an executable, via the
+double-click launchers: `Launch-SAMBADA-macOS.command`, `Launch-SAMBADA-Windows.bat`,
+`Launch-SAMBADA-Linux.sh`. (The SAMBADA binaries must then be present in `bin/<system>/`;
+see the `build/` scripts.) For a native window, also install `pywebview` (`pip install pywebview`).
+
+---
+
+## Folder layout
 
 ```
 sambada-gui/
-├── sambada_gui.py                  ← le serveur local (Python, bibliothèque standard)
-├── web/                            ← l'interface (HTML/CSS/JS)
-├── docs/                           ← documentation (onglet « Documentation »)
-├── examples/                       ← jeu de données d'exemple
-├── bin/<macos|windows|linux>/      ← binaires SAMBADA compilés
-├── build/                          ← scripts de COMPILATION du C++ (build-*.{sh,bat})
-├── packaging/                      ← spec + scripts d'EMPAQUETAGE en exécutable
-│   ├── SambadaStudio.spec          ← recette PyInstaller (multiplateforme)
+├── sambada_gui.py                  ← the local server (Python, standard library)
+├── web/                            ← the interface (HTML/CSS/JS) + assets (logo, icon)
+├── docs/                           ← documentation (shown in the "Documentation" tab)
+├── examples/                       ← example dataset
+├── bin/<macos|windows|linux>/      ← compiled SAMBADA binaries
+├── build/                          ← C++ COMPILATION scripts (build-*.{sh,bat})
+├── packaging/                      ← spec + EXECUTABLE packaging scripts + app icons
+│   ├── SambadaStudio.spec          ← PyInstaller recipe (cross-platform)
 │   └── package-*.{sh,bat}
-├── Lancer-SAMBADA-*.{command,bat,sh}  ← lanceurs « léger » (nécessitent Python)
-└── dist/                           ← exécutables produits (généré, non versionné)
+├── Launch-SAMBADA-*.{command,bat,sh}  ← "lightweight" launchers (require Python)
+└── dist/                           ← produced executables (generated, not versioned)
 ```
 
-## Note technique de portabilité
+## Portability note
 
-Une **unique correction de portabilité** a été appliquée à la librairie tierce Scythe : l'appel obsolète
-`finite(x)` a été remplacé par l'équivalent standard `std::isfinite(x)` (5 occurrences dans
-`ext/scythestat-1.0.3/`). Ces fonctions sont **strictement équivalentes** ; le comportement numérique de
-SAMBADA est inchangé.
+A **single portability fix** was applied to the bundled Scythe library: the obsolete `finite(x)`
+call was replaced with the standard equivalent `std::isfinite(x)` (5 occurrences in
+`ext/scythestat-1.0.3/`). These functions are **strictly equivalent**; SAMBADA's numerical behaviour
+is unchanged.
 
 ## Licence
 
-SAMBADA est distribué sous **GPL v3** (voir `COPYING` et `AUTHORS` à la racine du dépôt).
+SAMBADA is distributed under **GPL v3** (see `COPYING` and `AUTHORS` at the repository root).

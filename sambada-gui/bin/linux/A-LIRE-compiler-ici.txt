@@ -1,3 +1,0 @@
-Les binaires Linux ne sont pas inclus.
-Compilez-les sur une machine Linux avec : build/build-linux.sh
-(voir le README, section Compilation).

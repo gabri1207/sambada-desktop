@@ -1,5 +1,5 @@
 @echo off
-REM Double-cliquez ce fichier pour lancer SAMBADA Studio sur Windows.
+REM Double-click this file to launch SAMBADA Studio on Windows.
 cd /d "%~dp0"
 
 where py >nul 2>nul
@@ -14,9 +14,9 @@ if %errorlevel%==0 (
 )
 
 echo ===============================================================
-echo  Python 3 est introuvable.
-echo  Installez-le depuis https://www.python.org/downloads/
-echo  (cochez "Add Python to PATH" pendant l'installation),
-echo  puis relancez ce fichier.
+echo  Python 3 was not found.
+echo  Install it from https://www.python.org/downloads/
+echo  (tick "Add Python to PATH" during installation),
+echo  then run this file again.
 echo ===============================================================
 pause

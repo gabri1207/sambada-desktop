@@ -1,0 +1,3 @@
+The Linux binaries are not included.
+Build them on a Linux machine with: build/build-linux.sh
+(see the README, "building" section).

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Double-cliquez ce fichier pour lancer SAMBADA Studio sur macOS.
+# Double-click this file to launch SAMBADA Studio on macOS.
 cd "$(dirname "$0")" || exit 1
 
 PY=""
@@ -9,11 +9,11 @@ done
 
 if [ -z "$PY" ]; then
   echo "==============================================================="
-  echo " Python 3 est introuvable."
-  echo " Installez-le depuis https://www.python.org/downloads/ puis"
-  echo " relancez ce fichier."
+  echo " Python 3 was not found."
+  echo " Install it from https://www.python.org/downloads/ and then"
+  echo " run this file again."
   echo "==============================================================="
-  read -r -p "Appuyez sur Entrée pour fermer."
+  read -r -p "Press Enter to close."
   exit 1
 fi
 

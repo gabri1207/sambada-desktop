@@ -1,4 +1,4 @@
-# Artefacts de packaging (régénérables)
+# Packaging artifacts (regenerable)
 .venv/
 build/dist/
 build/build/
