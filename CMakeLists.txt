@@ -180,8 +180,8 @@ add_executable(supervision
 target_link_libraries(supervision
         PRIVATE
         intermediate
-        segmentation
         modeles
+        segmentation
         )
 
 add_executable(recode-plink

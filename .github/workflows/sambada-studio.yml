@@ -100,7 +100,9 @@ jobs:
   # ---------------------------------------------------------------- Release (on tag)
   release:
     name: Publish the Release
-    needs: [macos, linux, windows]
+    # Linux is not required so a Linux-only failure cannot block the Windows/macOS release.
+    # The Linux archive is still included in the Release when its job succeeds in time.
+    needs: [macos, windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/studio-v')
     permissions:
