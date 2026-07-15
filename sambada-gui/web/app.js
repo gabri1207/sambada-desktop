@@ -183,7 +183,7 @@ function renderSambadaForm() {
       field({ id: "numindiv", label: "Individuals", param: "NUMINDIV", type: "number", req: true, attrs: "min=1", ph: "—",
         help: "Number of data rows (sampled individuals)." }) +
       field({ id: "idindiv", label: "Identifier column", param: "IDINDIV", ph: "ID",
-        help: "Name (if headers) or number 0…N-1 (otherwise) of the identifier column." }) +
+        help: "Name (if headers) or number 0…N-1 (otherwise) of the identifier column. In two-file mode, give two names separated by a space: the ID column of the environment file, then of the markers file (e.g. idenv ID)." }) +
       field({ id: "colsupenv", label: "Ignored env. columns", param: "COLSUPENV", ph: "e.g. ID x y",
         help: "Inactive columns among the environment (names or numbers separated by spaces)." }) +
       field({ id: "colsupmark", label: "Ignored marker columns", param: "COLSUPMARK", ph: "e.g. ID",
@@ -291,7 +291,10 @@ function buildSambadaParam() {
   if (nv) lines.push("NUMVARENV " + nv);
   if (nm) lines.push("NUMMARK " + nm);
   if (ni) lines.push("NUMINDIV " + ni);
-  if (val("idindiv")) lines.push("IDINDIV " + q(val("idindiv")));
+  // IDINDIV may hold several space-separated column names (two-file mode:
+  // env ID name then marker ID name). Quote each name individually, never the
+  // whole string, otherwise SAMBADA reads it as one column named "a b".
+  if (val("idindiv")) lines.push("IDINDIV " + val("idindiv").split(/\s+/).map(q).join(" "));
   if (val("colsupenv")) lines.push("COLSUPENV " + val("colsupenv"));
   if (val("colsupmark")) lines.push("COLSUPMARK " + val("colsupmark"));
   if (val("subsetvarenv")) lines.push("SUBSETVARENV " + val("subsetvarenv"));
