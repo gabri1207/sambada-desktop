@@ -1,0 +1,9 @@
+# Packaging artifacts (regenerable)
+.venv/
+build/dist/
+build/build/
+packaging/build/
+packaging/dist/
+dist/
+__pycache__/
+*.pyc

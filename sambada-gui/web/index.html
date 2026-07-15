@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SAMBADA Studio</title>
+  <link rel="icon" type="image/png" href="/assets/icon-256.png" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img class="wordmark" src="/assets/sambada-wordmark.png" alt="SAMBADA Studio" />
+      <p class="sub">Detection of selection signatures &amp; spatial analysis</p>
+    </div>
+    <div class="meta">
+      <div class="ver" id="verLine">…</div>
+      <div class="status" id="statusLine"></div>
+      <button class="quit" id="quitBtn" hidden>Quit</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="sambada">Analysis</button>
+    <button class="tab" data-tab="recode">Prepare data (Plink)</button>
+    <button class="tab" data-tab="results">Results</button>
+    <button class="tab tab-right" data-tab="docs">Documentation</button>
+    <button class="tab" data-tab="about">About</button>
+  </nav>
+
+  <main>
+    <!-- ============ ANALYSIS ============ -->
+    <section class="panel active" id="tab-sambada">
+      <div class="tab-actions" id="sambadaActions" hidden>
+        <span class="ta-hint">New here? Try the app on a small bundled dataset.</span>
+        <button type="button" class="ghost small" id="loadExample">Load example</button>
+      </div>
+      <div class="cols">
+        <form id="sambadaForm" autocomplete="off"></form>
+        <aside class="side">
+          <div class="side-head">
+            <span class="side-title">Generated parameters</span>
+            <button type="button" class="mini" id="copyParam">copy</button>
+          </div>
+          <div class="code" id="paramPreview"></div>
+          <div class="missing" id="validationMsg"></div>
+          <button type="button" class="run" id="runSambada" disabled>▶ Run analysis</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ PREPARE (PLINK) ============ -->
+    <section class="panel" id="tab-recode">
+      <div class="cols">
+        <form id="recodeForm" autocomplete="off"></form>
+        <aside class="side">
+          <div class="side-head"><span class="side-title">Generated command</span></div>
+          <div class="code" id="recodePreview"></div>
+          <div class="missing" id="recodeValidation"></div>
+          <button type="button" class="run" id="runRecode" disabled>▶ Run recoding</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ RESULTS ============ -->
+    <section class="panel" id="tab-results">
+      <div class="res-view">
+        <div class="res-toolbar">
+          <span class="fld-label">Results file</span>
+          <input type="text" id="resPath" placeholder="…/results-Out-1" spellcheck="false" />
+          <button type="button" class="ghost small" id="resBrowse">Browse</button>
+          <button type="button" class="primary" id="resLoad">Load</button>
+        </div>
+        <div class="res-controls" id="resControls" hidden>
+          <label>Sort by
+            <select id="resSort">
+              <option value="gscore">G-score (significance)</option>
+              <option value="wald">Wald score</option>
+              <option value="nagelkerke">Nagelkerke R²</option>
+              <option value="aic">AIC (lowest)</option>
+            </select>
+          </label>
+          <label>Show
+            <select id="resFilter">
+              <option value="all">All models</option>
+              <option value="p01">p &lt; 0.01</option>
+              <option value="p001">p &lt; 0.001</option>
+              <option value="p1e5">p &lt; 1e-5</option>
+            </select>
+          </label>
+          <label>Top
+            <select id="resLimit">
+              <option value="100">100</option>
+              <option value="200" selected>200</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+            </select>
+          </label>
+          <input type="text" id="resSearch" placeholder="filter marker / variable…" spellcheck="false" />
+          <button type="button" class="ghost small" id="resExport">⬇ Export CSV</button>
+        </div>
+        <div id="resSummary"></div>
+        <div id="resManhattan"></div>
+        <div id="resChart"></div>
+        <div id="resTableWrap"></div>
+        <div id="resMsg" class="res-msg">Run an analysis, then click <b>📊 View results</b> — or Browse to an <code>-Out-1</code> file and click <b>Load</b>.</div>
+      </div>
+    </section>
+
+    <!-- ============ DOCUMENTATION ============ -->
+    <section class="panel" id="tab-docs">
+      <div class="docs-wrap">
+        <div class="docs-toc" id="docsToc">
+          <button class="doc-link active" data-doc="getting-started.md">Getting started</button>
+          <button class="doc-link" data-doc="parameters.md">Parameter reference</button>
+          <button class="doc-link" data-doc="file-formats.md">File formats</button>
+        </div>
+        <article class="docs-content" id="docsContent">…</article>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="panel" id="tab-about">
+      <div class="about">
+        <h2>About SAMBADA Studio</h2>
+        <p><strong>SAMBADA</strong> is a landscape genomics software developed by the
+           Laboratory of Geographic Information Systems (LaSIG) at EPFL
+           (Sylvie Stucki, Stéphane Joost). It detects associations between genetic markers
+           and environmental variables (selection signatures) and analyses spatial dependence.</p>
+        <p><strong>SAMBADA Studio</strong> is a graphical interface that makes the software easier to use.
+           It does <em>not</em> alter SAMBADA's behaviour: it prepares the parameter file
+           and calls the official programs.</p>
+        <div id="aboutEnv" class="about-env"></div>
+        <p class="muted">SAMBADA is distributed under the GPL v3 licence — see <code>COPYING</code> and <code>AUTHORS</code>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Run console modal ===== -->
+  <div class="modal-bg" id="runModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="runTitle">Running…</h3>
+        <span class="run-status" id="runStatus">running…</span>
+      </div>
+      <pre class="console" id="console"></pre>
+      <div class="results" id="results"></div>
+      <div class="modal-foot">
+        <button type="button" class="ghost" id="closeRun">Close</button>
+        <button type="button" class="ghost" id="openOutputDir" hidden>📂 Open results folder</button>
+        <button type="button" class="primary" id="viewResults" hidden>📊 View results</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== File picker modal ===== -->
+  <div class="modal-bg" id="fileModal">
+    <div class="modal filebrowser">
+      <div class="modal-head"><h3 id="fbTitle">Choose a file</h3></div>
+      <div class="fb-path"><input type="text" id="fbPath" spellcheck="false" /><button class="ghost small" id="fbGo">Go</button></div>
+      <div class="fb-list" id="fbList"></div>
+      <div class="modal-foot">
+        <button type="button" class="ghost" id="fbCancel">Cancel</button>
+        <button type="button" class="primary" id="fbChooseDir" hidden>Choose this folder</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
