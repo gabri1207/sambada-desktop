@@ -30,14 +30,14 @@
 
 *.DS_Store
 binaries/
-build/
+/build/
 TestDivers.cpp
 creeEtiquettes.cpp
 parcoursModeles.cpp
 splitFiles.cpp
 testBootstrap.cpp
 VERSION
-build*/
+/build*/
 qSambada/
 .atom-dbg.cson
 .build-tools.cson

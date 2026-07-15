@@ -1,7 +1,6 @@
 # Packaging artifacts (regenerable)
 .venv/
-build/dist/
-build/build/
+build/*/
 packaging/build/
 packaging/dist/
 dist/
